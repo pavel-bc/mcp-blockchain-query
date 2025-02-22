@@ -1,6 +1,6 @@
 # MCP Blockchain Query Server
 
-[Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that provides tools for querying Bitcoin blockchain data using the Blockchain.com [Data API](https://www.blockchain.com/explorer/api/blockchain_api) and [Query API](https://www.blockchain.com/explorer/api/q).
+[Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that provides tools for querying BTC blockchain data using the Blockchain.com [Data API](https://www.blockchain.com/explorer/api/blockchain_api) and [Query API](https://www.blockchain.com/explorer/api/q).
 
 ## Features
 
