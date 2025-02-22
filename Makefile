@@ -13,3 +13,4 @@ server: venv
 
 clean:
 	rm -rf venv
+	rm -rf src/__pycache__
