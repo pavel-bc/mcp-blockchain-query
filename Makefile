@@ -1,15 +1,15 @@
-install:
-	python -m venv venv
-	. venv/bin/activate; pip install -Ur requirements.txt
+venv: venv/touchfile
 
-run:
-	. venv/bin/activate; python main.py
+venv/touchfile:
+	test -d venv || virtualenv -p python3.13 venv
+	. venv/bin/activate; pip install -e .
+	touch venv/touchfile
 
-server:
-	. venv/bin/activate; python main.py --transport sse --port 8000
+run: venv
+	. venv/bin/activate; python -m src.main
+
+server: venv
+	. venv/bin/activate; python -m src.main --transport sse --port 8000
 
 clean:
 	rm -rf venv
-	find -iname "*.pyc" -delete
-
-.PHONY: clean install run server

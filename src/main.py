@@ -7,6 +7,7 @@ from typing import List, Union
 
 BASE_URL = "https://blockchain.info"
 
+
 async def fetch_blockchain_data(endpoint: str, params: dict = None) -> Union[dict, str]:
     headers = {
         "User-Agent": "MCP Blockchain Server (github.com/modelcontextprotocol/python-sdk)"
@@ -19,6 +20,7 @@ async def fetch_blockchain_data(endpoint: str, params: dict = None) -> Union[dic
         if endpoint.startswith("q/"):
             return response.text
         return response.json()
+
 
 @click.command()
 @click.option("--port", default=8000, help="Port to listen on for SSE")
@@ -40,91 +42,85 @@ def main(port: int, transport: str) -> int:
                 raise ValueError("Missing required argument 'block_hash'")
             data = await fetch_blockchain_data(f"rawblock/{arguments['block_hash']}")
             return [types.TextContent(type="text", text=str(data))]
-            
+
         elif name == "get_transaction":
             if "tx_hash" not in arguments:
                 raise ValueError("Missing required argument 'tx_hash'")
             data = await fetch_blockchain_data(f"rawtx/{arguments['tx_hash']}")
             return [types.TextContent(type="text", text=str(data))]
-            
+
         elif name == "get_address":
             if "address" not in arguments:
                 raise ValueError("Missing required argument 'address'")
             params = {"limit": arguments.get("limit", 50)}
-            data = await fetch_blockchain_data(f"rawaddr/{arguments['address']}", params)
+            data = await fetch_blockchain_data(
+                f"rawaddr/{arguments['address']}", params
+            )
             return [types.TextContent(type="text", text=str(data))]
-            
+
         elif name == "get_difficulty":
             data = await fetch_blockchain_data("q/getdifficulty")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_block_count":
             data = await fetch_blockchain_data("q/getblockcount")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_address_balance":
             if "address" not in arguments:
                 raise ValueError("Missing required argument 'address'")
             params = {"confirmations": arguments.get("confirmations", 0)}
-            data = await fetch_blockchain_data(f"q/addressbalance/{arguments['address']}", params)
+            data = await fetch_blockchain_data(
+                f"q/addressbalance/{arguments['address']}", params
+            )
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_hash_rate":
             data = await fetch_blockchain_data("q/hashrate")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_avg_tx_size":
             blocks = arguments.get("blocks", 1000)
             data = await fetch_blockchain_data(f"q/avgtxsize/{blocks}")
             return [types.TextContent(type="text", text=data)]
-            
-        elif name == "get_tx_fees":
-            data = await fetch_blockchain_data("q/transactionfees")
-            return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_total_bitcoins":
             data = await fetch_blockchain_data("q/totalbc")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_probability":
             hashrate = arguments.get("hashrate", 1)
             data = await fetch_blockchain_data(f"q/probability/{hashrate}")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_market_price":
             data = await fetch_blockchain_data("q/24hrprice")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_block_interval":
             data = await fetch_blockchain_data("q/interval")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_block_reward":
             data = await fetch_blockchain_data("q/bcperblock")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_next_retarget":
             data = await fetch_blockchain_data("q/nextretarget")
             return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_latest_hash":
             data = await fetch_blockchain_data("q/latesthash")
             return [types.TextContent(type="text", text=data)]
-            
-        elif name == "get_block_value":
-            if "block_hash" not in arguments:
-                raise ValueError("Missing required argument 'block_hash'")
-            data = await fetch_blockchain_data(f"q/getblockvalue/{arguments['block_hash']}")
-            return [types.TextContent(type="text", text=data)]
-            
+
         elif name == "get_unconfirmed_count":
             data = await fetch_blockchain_data("q/unconfirmedcount")
             return [types.TextContent(type="text", text=data)]
-            
-        elif name == "get_24h_volume":
+
+        elif name == "get_24h_tx_count":
             data = await fetch_blockchain_data("q/24hrtransactioncount")
             return [types.TextContent(type="text", text=data)]
-            
+
         else:
             raise ValueError(f"Unknown tool: {name}")
 
@@ -173,26 +169,20 @@ def main(port: int, transport: str) -> int:
                         "limit": {
                             "type": "integer",
                             "description": "Number of transactions to return (default: 50)",
-                            "default": 50
-                        }
+                            "default": 50,
+                        },
                     },
                 },
             ),
             types.Tool(
                 name="get_difficulty",
                 description="Returns the current Bitcoin network difficulty",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_block_count",
                 description="Returns the current block height in the Bitcoin blockchain",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_address_balance",
@@ -208,18 +198,15 @@ def main(port: int, transport: str) -> int:
                         "confirmations": {
                             "type": "integer",
                             "description": "Minimum confirmations for included transactions (default: 0)",
-                            "default": 0
-                        }
+                            "default": 0,
+                        },
                     },
                 },
             ),
             types.Tool(
                 name="get_hash_rate",
                 description="Returns the estimated network hash rate in GH/s",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_avg_tx_size",
@@ -230,26 +217,15 @@ def main(port: int, transport: str) -> int:
                         "blocks": {
                             "type": "integer",
                             "description": "Number of blocks to average (default: 1000)",
-                            "default": 1000
+                            "default": 1000,
                         }
                     },
                 },
             ),
             types.Tool(
-                name="get_tx_fees",
-                description="Returns the total transaction fees in the last 24 hours (in satoshis)",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
-            ),
-            types.Tool(
                 name="get_total_bitcoins",
                 description="Returns the total number of bitcoins that have been mined",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_probability",
@@ -260,7 +236,7 @@ def main(port: int, transport: str) -> int:
                         "hashrate": {
                             "type": "number",
                             "description": "Hashrate in GH/s (default: 1)",
-                            "default": 1
+                            "default": 1,
                         }
                     },
                 },
@@ -268,72 +244,37 @@ def main(port: int, transport: str) -> int:
             types.Tool(
                 name="get_market_price",
                 description="Returns the 24-hour market price in USD",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_block_interval",
                 description="Returns the average time between blocks in seconds",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_block_reward",
                 description="Returns the current block reward in BTC",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_next_retarget",
                 description="Returns the block height of the next difficulty retarget",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_latest_hash",
                 description="Returns the hash of the latest block",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
-            ),
-            types.Tool(
-                name="get_block_value", 
-                description="Returns the value of all transactions in the block in satoshis",
-                inputSchema={
-                    "type": "object",
-                    "required": ["block_hash"],
-                    "properties": {
-                        "block_hash": {
-                            "type": "string",
-                            "description": "The block hash to query"
-                        }
-                    },
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
                 name="get_unconfirmed_count",
                 description="Returns the number of unconfirmed transactions in the mempool",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
             types.Tool(
-                name="get_24h_volume",
+                name="get_24h_tx_count",
                 description="Returns the number of transactions in the last 24 hours",
-                inputSchema={
-                    "type": "object",
-                    "properties": {}
-                },
+                inputSchema={"type": "object", "properties": {}},
             ),
         ]
 
@@ -376,5 +317,7 @@ def main(port: int, transport: str) -> int:
 
     return 0
 
+
+# Add this if you want the file to be directly runnable
 if __name__ == "__main__":
     main()
