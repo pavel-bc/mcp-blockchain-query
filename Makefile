@@ -11,6 +11,11 @@ run: venv
 server: venv
 	. venv/bin/activate; python -m src.main --transport sse --port 8000
 
+inspect:
+	npx @modelcontextprotocol/inspector node build/index.js
+
 clean:
 	rm -rf venv
 	rm -rf src/__pycache__
+
+.PHONY: inspect
