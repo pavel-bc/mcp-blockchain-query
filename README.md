@@ -1,5 +1,9 @@
 # MCP Blockchain Query Server
 
+```
+⚠️ Warning: Most of the code in this repository is generated using Grok 3
+```
+
 [Model Context Protocol](https://modelcontextprotocol.io) server providing tools for querying BTC data via Blockchain [Data](https://www.blockchain.com/explorer/api/blockchain_api) and [Query](https://www.blockchain.com/explorer/api/q) APIs.
 
 https://github.com/user-attachments/assets/b270979b-b22f-467c-bcb4-54bd48504073
